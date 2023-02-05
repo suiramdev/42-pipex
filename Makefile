@@ -6,7 +6,7 @@
 #    By: mnouchet <mnouchet@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/06 22:19:57 by mnouchet          #+#    #+#              #
-#    Updated: 2023/02/04 17:29:26 by mnouchet         ###   ########.fr        #
+#    Updated: 2023/02/04 19:28:40 by mnouchet         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -84,7 +84,7 @@ $(BUILD_DIR)/%.o: $(SRCS_DIR)/%.c
 
 all: $(NAME)
 
-$(NAME): $(OBJS) $(LIBS_TARGET)
+$(NAME): $(LIBS_TARGET) $(OBJS)
 	$(CC) $(LDFLAGS) $(OBJS) $(LDLIBS) -o $(NAME)
 	echo "\033[0;32m✓ $@ READY"
 
