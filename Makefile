@@ -6,7 +6,7 @@
 #    By: mnouchet <mnouchet@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/06 22:19:57 by mnouchet          #+#    #+#              #
-#    Updated: 2023/02/04 19:28:40 by mnouchet         ###   ########.fr        #
+#    Updated: 2023/02/05 20:16:51 by mnouchet         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -39,6 +39,7 @@ INCS		:= includes				\
 
 SRCS_DIR	:= src
 SRCS		:= main.c				\
+			   pipes.c				\
 			   types/commands.c
 
 SRCS		:= $(SRCS:%=$(SRCS_DIR)/%)

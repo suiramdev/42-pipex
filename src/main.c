@@ -6,71 +6,26 @@
 /*   By: mnouchet <mnouchet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 19:25:06 by mnouchet          #+#    #+#             */
-/*   Updated: 2023/02/05 19:55:07 by mnouchet         ###   ########.fr       */
+/*   Updated: 2023/02/05 20:22:15 by mnouchet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "pipes.h"
 #include "types/commands.h"
 #include <fcntl.h>
-#include <libft.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
-static void	close_pipes(int **fd)
+static int	process(char **argv, char **envp, int **fd)
 {
-	int	i;
+	int			i;
+	pid_t		pid;
+	t_command	cmd;
 
-	i = 0;
-	while (fd[i])
-	{
-		close(fd[i][0]);
-		close(fd[i][1]);
-		free(fd[i]);
-		i++;
-	}
-	free(fd);
-}
-
-static int	**setup_pipes(int count)
-{
-	int	**fd;
-	int	i;
-
-	fd = malloc(sizeof(int *) * (count) + 1);
-	if (!fd)
-		return (NULL);
-	i = 0;
-	while (i < count)
-	{
-		fd[i] = malloc(sizeof(int) * 2);
-		if (!fd[i] || pipe(fd[i]) < 0)
-		{
-			close_pipes(fd);
-			return (NULL);
-		}
-		i++;
-	}
-	fd[i] = NULL;
-	return (fd);
-}
-
-int	main(int argc, char **argv, char **envp)
-{
-	int **fd;
-	int i;
-	pid_t pid;
-	t_command cmd;
-	char buffer[400];
-
-	if (argc < 4)
-		return (EXIT_FAILURE);
-	fd = setup_pipes(argc - 2);
-	if (!fd)
-		return (EXIT_FAILURE);
 	dup2(open(argv[1], O_RDONLY), STDIN_FILENO);
 	i = 0;
-	while (i < argc - 3)
+	while (argv[i + 2])
 	{
 		pid = fork();
 		if (pid < 0)
@@ -87,8 +42,34 @@ int	main(int argc, char **argv, char **envp)
 		dup2(fd[i][0], STDIN_FILENO);
 		i++;
 	}
-	while (read(fd[i - 1][0], buffer, 400) > 0)
-		printf("%s", buffer);
+	return (EXIT_SUCCESS);
+}
+
+int	main(int argc, char **argv, char **envp)
+{
+	int **fd;
+	int output;
+	int bytes;
+	char buffer[400];
+
+	if (argc < 4)
+		return (EXIT_FAILURE);
+	fd = setup_pipes(argc - 2);
+	if (!fd)
+		return (EXIT_FAILURE);
+	if (process(argv, envp, fd) == EXIT_FAILURE)
+	{
+		close_pipes(fd);
+		return (EXIT_FAILURE);
+	}
+	output = open(argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	bytes = read(fd[argc - 4][0], buffer, 400);
+	while (bytes > 0)
+	{
+		write(output, buffer, bytes);
+		bytes = read(fd[argc - 4][0], buffer, 400);
+	}
+	close(output);
 	close_pipes(fd);
 	return (EXIT_SUCCESS);
 }
