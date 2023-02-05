@@ -6,7 +6,7 @@
 /*   By: mnouchet <mnouchet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 19:25:06 by mnouchet          #+#    #+#             */
-/*   Updated: 2023/02/05 20:22:15 by mnouchet         ###   ########.fr       */
+/*   Updated: 2023/02/06 00:33:28 by mnouchet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,10 +47,10 @@ static int	process(char **argv, char **envp, int **fd)
 
 int	main(int argc, char **argv, char **envp)
 {
-	int **fd;
-	int output;
-	int bytes;
-	char buffer[400];
+	int		**fd;
+	int		output;
+	int		bytes;
+	char	buffer[400];
 
 	if (argc < 4)
 		return (EXIT_FAILURE);
