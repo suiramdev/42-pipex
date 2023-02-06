@@ -6,11 +6,11 @@
 #    By: mnouchet <mnouchet@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/06 22:19:57 by mnouchet          #+#    #+#              #
-#    Updated: 2023/02/05 20:16:51 by mnouchet         ###   ########.fr        #
+#    Updated: 2023/02/06 16:15:22 by mnouchet         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME		:= pipex
+NAME		:= fdf
 
 ## ########################################################################## ##
 #   INGREDIENTS																  ##
@@ -76,7 +76,7 @@ DIR_DUP     = mkdir -p $(@D)
 
 $(LIBS_TARGET):
 	echo "→ Compiling $(@F)"
-	$(MAKE) $(MAKEFLAGS) -C $(@D)
+	$(MAKE) -C $(@D)
 
 $(BUILD_DIR)/%.o: $(SRCS_DIR)/%.c
 	echo "→ Compiling $<"
