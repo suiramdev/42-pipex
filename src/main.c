@@ -6,17 +6,17 @@
 /*   By: mnouchet <mnouchet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 19:25:06 by mnouchet          #+#    #+#             */
-/*   Updated: 2023/02/06 16:08:01 by mnouchet         ###   ########.fr       */
+/*   Updated: 2023/02/07 19:54:13 by mnouchet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipes.h"
 #include "types/commands.h"
-#include <sys/types.h>
-#include <sys/wait.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #include <unistd.h>
 
 static int	process(char **argv, char **envp, int **fd)
@@ -36,7 +36,8 @@ static int	process(char **argv, char **envp, int **fd)
 		{
 			dup2(fd[i][1], STDOUT_FILENO);
 			cmd = parse_command(argv[i + 2]);
-			execve(cmd.file, cmd.args, envp);
+			if (!cmd.file)
+				execve(cmd.file, cmd.args, envp);
 			return (EXIT_FAILURE);
 		}
 		wait(&pid);
@@ -47,31 +48,40 @@ static int	process(char **argv, char **envp, int **fd)
 	return (EXIT_SUCCESS);
 }
 
-int	main(int argc, char **argv, char **envp)
+static void	write_to(int from, int to)
 {
-	int		**fd;
-	int		output;
 	int		bytes;
 	char	buffer[400];
+
+	bytes = read(fd[argc - 4][0], buffer, 400);
+	while (bytes > 0)
+	{
+		write(to, buffer, bytes);
+		bytes = read(fd[argc - 4][0], buffer, 400);
+	}
+}
+
+int	main(int argc, char **argv, char **envp)
+{
+	int	backup[2];
+	int	**fd;
+	int	output;
 
 	if (argc < 4)
 		return (EXIT_FAILURE);
 	fd = setup_pipes(argc - 2);
 	if (!fd)
 		return (EXIT_FAILURE);
+	backup[0] = dup(STDIN_FILENO);
+	backup[1] = dup(STDOUT_FILENO);
 	if (process(argv, envp, fd) == EXIT_FAILURE)
 	{
-		close_pipes(fd);
-		return (EXIT_FAILURE);
+		output = open(argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		write_to(fd[argc - 4][0], STDOUT_FILENO);
+		close(output);
 	}
-	output = open(argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	bytes = read(fd[argc - 4][0], buffer, 400);
-	while (bytes > 0)
-	{
-		write(output, buffer, bytes);
-		bytes = read(fd[argc - 4][0], buffer, 400);
-	}
-	close(output);
+	dup2(backup[0], STDIN_FILENO);
+	dup2(backup[1], STDOUT_FILENO);
 	close_pipes(fd);
 	return (EXIT_SUCCESS);
 }

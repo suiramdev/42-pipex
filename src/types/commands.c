@@ -6,7 +6,7 @@
 /*   By: mnouchet <mnouchet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 23:08:20 by mnouchet          #+#    #+#             */
-/*   Updated: 2023/02/06 19:44:52 by mnouchet         ###   ########.fr       */
+/*   Updated: 2023/02/07 19:55:33 by mnouchet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ static char	*resolve_file(char *file)
 		return (file);
 	env = ft_env("PATH");
 	if (!env)
-		return (NULL)
+		return (NULL);
 	i = 0;
 	while (env[i])
 	{
@@ -60,10 +60,7 @@ static char	*resolve_file(char *file)
 	}
 	i = 0;
 	while (env[i])
-	{
-		free(env[i]);
-		i++;
-	}
+		free(env[i++]);
 	free(env);
 	return (path);
 }
