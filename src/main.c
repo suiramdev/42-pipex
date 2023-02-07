@@ -6,7 +6,7 @@
 /*   By: mnouchet <mnouchet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 19:25:06 by mnouchet          #+#    #+#             */
-/*   Updated: 2023/02/07 19:54:13 by mnouchet         ###   ########.fr       */
+/*   Updated: 2023/02/07 20:41:07 by mnouchet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static int	process(char **argv, char **envp, int **fd)
 		{
 			dup2(fd[i][1], STDOUT_FILENO);
 			cmd = parse_command(argv[i + 2]);
-			if (!cmd.file)
+			if (cmd.file)
 				execve(cmd.file, cmd.args, envp);
 			return (EXIT_FAILURE);
 		}
@@ -53,11 +53,11 @@ static void	write_to(int from, int to)
 	int		bytes;
 	char	buffer[400];
 
-	bytes = read(fd[argc - 4][0], buffer, 400);
+	bytes = read(from, buffer, 400);
 	while (bytes > 0)
 	{
 		write(to, buffer, bytes);
-		bytes = read(fd[argc - 4][0], buffer, 400);
+		bytes = read(from, buffer, 400);
 	}
 }
 
@@ -74,10 +74,10 @@ int	main(int argc, char **argv, char **envp)
 		return (EXIT_FAILURE);
 	backup[0] = dup(STDIN_FILENO);
 	backup[1] = dup(STDOUT_FILENO);
-	if (process(argv, envp, fd) == EXIT_FAILURE)
+	if (process(argv, envp, fd) == EXIT_SUCCESS)
 	{
 		output = open(argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		write_to(fd[argc - 4][0], STDOUT_FILENO);
+		write_to(fd[argc - 4][0], output);
 		close(output);
 	}
 	dup2(backup[0], STDIN_FILENO);
