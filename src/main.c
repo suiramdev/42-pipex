@@ -6,7 +6,7 @@
 /*   By: mnouchet <mnouchet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 19:25:06 by mnouchet          #+#    #+#             */
-/*   Updated: 2023/02/07 20:41:07 by mnouchet         ###   ########.fr       */
+/*   Updated: 2023/02/09 15:09:51 by mnouchet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ static int	process(char **argv, char **envp, int **fd)
 			cmd = parse_command(argv[i + 2]);
 			if (cmd.file)
 				execve(cmd.file, cmd.args, envp);
+			free_command(cmd);
 			return (EXIT_FAILURE);
 		}
 		wait(&pid);

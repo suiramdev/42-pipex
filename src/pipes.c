@@ -6,7 +6,7 @@
 /*   By: mnouchet <mnouchet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/05 20:07:40 by mnouchet          #+#    #+#             */
-/*   Updated: 2023/02/06 00:32:16 by mnouchet         ###   ########.fr       */
+/*   Updated: 2023/02/09 15:03:50 by mnouchet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	**setup_pipes(int count)
 	int	**fd;
 	int	i;
 
-	fd = malloc(sizeof(int *) * (count) + 1);
+	fd = malloc(sizeof(int *) * (count + 1));
 	if (!fd)
 		return (NULL);
 	i = 0;

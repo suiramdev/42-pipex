@@ -6,7 +6,7 @@
 /*   By: mnouchet <mnouchet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 23:08:20 by mnouchet          #+#    #+#             */
-/*   Updated: 2023/02/07 19:55:33 by mnouchet         ###   ########.fr       */
+/*   Updated: 2023/02/09 15:11:49 by mnouchet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,4 +74,18 @@ t_command	parse_command(char *str)
 	command.file = resolve_file(args[0]);
 	command.args = args;
 	return (command);
+}
+
+void	free_command(t_command command)
+{
+	int	i;
+
+	free(command.file);
+	i = 0;
+	while (command.args[i])
+	{
+		free(command.args[i]);
+		i++;
+	}
+	free(command.args);
 }
