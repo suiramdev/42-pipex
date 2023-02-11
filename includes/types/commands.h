@@ -20,5 +20,6 @@ typedef struct s_command
 }	t_command;
 
 t_command	parse_command(char *str);
+void		free_command(t_command command);
 
 #endif
