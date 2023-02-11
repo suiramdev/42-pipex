@@ -56,6 +56,7 @@ static char	*resolve_file(char *file)
 		if (access(path, X_OK) >= 0)
 			break ;
 		free(path);
+		path = NULL;
 		i++;
 	}
 	i = 0;
