@@ -51,7 +51,7 @@ CC			:= cc
 CFLAGS		:= -g3 -Wall -Wextra -Werror	
 CPPFLAGS    := $(INCS:%=-I%)
 LDFLAGS     := $(addprefix -L,$(dir $(LIBS_TARGET))) -L /opt/X11/lib
-LDLIBS      := $(addprefix -l,$(LIBS)) -lX11 -lXext
+LDLIBS      := $(addprefix -l,$(LIBS))
 
 ## ########################################################################## ##
 #   UTENSILS																  ##
