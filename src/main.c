@@ -6,7 +6,7 @@
 /*   By: mnouchet <mnouchet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 19:25:06 by mnouchet          #+#    #+#             */
-/*   Updated: 2023/02/11 18:17:16 by mnouchet         ###   ########.fr       */
+/*   Updated: 2023/02/11 19:25:43 by mnouchet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ static int	process_command(t_command command, int **fd)
 	free_command(command);
 }
 
-static int	process(int	argc, char **argv, char **envp, int **fd)
+static int	process(int argc, char **argv, char **envp, int **fd)
 {
 	int			i;
 	pid_t		pid;
