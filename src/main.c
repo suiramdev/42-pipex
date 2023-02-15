@@ -6,20 +6,24 @@
 /*   By: mnouchet <mnouchet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 19:25:06 by mnouchet          #+#    #+#             */
-/*   Updated: 2023/02/11 19:25:43 by mnouchet         ###   ########.fr       */
+/*   Updated: 2023/02/15 18:24:21 by mnouchet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipes.h"
 #include "types/commands.h"
+#include "here_doc.h"
 #include <fcntl.h>
+#include <libft.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
-static int	process_command(t_command command, int **fd)
+extern char	**environ;
+
+static int	process_command(t_command command, int *fd, char **envp)
 {
 	int	pid;
 
@@ -28,34 +32,41 @@ static int	process_command(t_command command, int **fd)
 		return (EXIT_FAILURE);
 	if (pid == 0)
 	{
-		dup2(fd[i][1], STDOUT_FILENO);
+		dup2(fd[1], STDOUT_FILENO);
 		execve(command.file, command.args, envp);
 		free_command(command);
 		return (EXIT_FAILURE);
 	}
 	wait(&pid);
-	close(fd[i][1]);
-	dup2(fd[i][0], STDIN_FILENO);
+	close(fd[1]);
+	dup2(fd[0], STDIN_FILENO);
 	free_command(command);
+	return (EXIT_SUCCESS);
 }
 
-static int	process(int argc, char **argv, char **envp, int **fd)
+static int	process(int argc, char **argv, int **fd, int use_here_doc)
 {
 	int			i;
-	pid_t		pid;
 	t_command	command;
 
-	dup2(open(argv[1], O_RDONLY), STDIN_FILENO);
-	i = 0;
-	while (i < argc - 3)
+	if (use_here_doc)
 	{
-		command = parse_command(argv[i + 2]);
+		if (here_doc(argv) == EXIT_FAILURE)
+			return (EXIT_FAILURE);
+	}
+	else
+		dup2(open(argv[1], O_RDONLY), STDIN_FILENO);
+	i = 0;
+	while (i < argc - 3 - use_here_doc)
+	{
+		command = parse_command(argv[i + 2 + use_here_doc]);
 		if (!command.file)
 		{
 			free_command(command);
 			return (EXIT_FAILURE);
 		}
-		process_command(command, fd);
+		if (process_command(command, fd[i], environ) == EXIT_FAILURE)
+			return (EXIT_FAILURE);
 		i++;
 	}
 	return (EXIT_SUCCESS);
@@ -74,27 +85,31 @@ static void	copy_to(int from, int to)
 	}
 }
 
-int	main(int argc, char **argv, char **envp)
+int	main(int argc, char **argv)
 {
-	int	backup[2];
+	int	use_here_doc;
 	int	**fd;
+	int	backup[2];
+	int	process_output;
 	int	output;
 
 	if (argc < 4)
 		return (EXIT_FAILURE);
-	fd = setup_pipes(argc - 2);
+	use_here_doc = ft_strncmp(argv[1], "here_doc", ft_strlen(argv[1])) == 0;
+	fd = setup_pipes(argc - 3 - use_here_doc);
 	if (!fd)
 		return (EXIT_FAILURE);
 	backup[0] = dup(STDIN_FILENO);
 	backup[1] = dup(STDOUT_FILENO);
-	if (process(argc, argv, envp, fd) == EXIT_SUCCESS)
+	process_output = process(argc, argv, fd, use_here_doc);
+	if (process_output == EXIT_SUCCESS)
 	{
 		output = open(argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		copy_to(fd[argc - 4][0], output);
+		copy_to(fd[argc - 4 - use_here_doc][0], output);
 		close(output);
 	}
 	dup2(backup[0], STDIN_FILENO);
 	dup2(backup[1], STDOUT_FILENO);
 	close_pipes(fd);
-	return (EXIT_SUCCESS);
+	return (process_output);
 }
