@@ -6,7 +6,7 @@
 /*   By: mnouchet <mnouchet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 19:25:06 by mnouchet          #+#    #+#             */
-/*   Updated: 2023/02/15 18:24:21 by mnouchet         ###   ########.fr       */
+/*   Updated: 2023/02/15 18:31:49 by mnouchet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,9 +93,9 @@ int	main(int argc, char **argv)
 	int	process_output;
 	int	output;
 
-	if (argc < 4)
-		return (EXIT_FAILURE);
 	use_here_doc = ft_strncmp(argv[1], "here_doc", ft_strlen(argv[1])) == 0;
+	if (argc - 3 - use_here_doc < 1)
+		return (EXIT_FAILURE);
 	fd = setup_pipes(argc - 3 - use_here_doc);
 	if (!fd)
 		return (EXIT_FAILURE);
