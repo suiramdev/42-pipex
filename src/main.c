@@ -6,7 +6,7 @@
 /*   By: mnouchet <mnouchet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 19:25:06 by mnouchet          #+#    #+#             */
-/*   Updated: 2023/02/16 15:48:46 by mnouchet         ###   ########.fr       */
+/*   Updated: 2023/02/16 17:50:06 by mnouchet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,11 +59,6 @@ static int	process(int argc, char **argv, int **fd, int use_here_doc)
 	while (i < argc - 3 - use_here_doc)
 	{
 		command = parse_command(argv[i + 2 + use_here_doc]);
-		if (!command.file)
-		{
-			free_command(command);
-			return (EXIT_FAILURE);
-		}
 		if (process_command(command, fd[i], environ) == EXIT_FAILURE)
 			return (EXIT_FAILURE);
 		i++;
