@@ -6,13 +6,15 @@
 /*   By: mnouchet <mnouchet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 18:17:36 by mnouchet          #+#    #+#             */
-/*   Updated: 2023/02/15 18:25:47 by mnouchet         ###   ########.fr       */
+/*   Updated: 2023/02/16 15:49:01 by mnouchet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <libft.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 static void	here_doc_loop(char *delim, int fd[2])
 {
@@ -34,8 +36,8 @@ static void	here_doc_loop(char *delim, int fd[2])
 
 int	here_doc(char **argv)
 {
-	int	fd[2];
-	int	pid;
+	int		fd[2];
+	pid_t	pid;
 
 	if (pipe(fd) < 0)
 		return (EXIT_FAILURE);
