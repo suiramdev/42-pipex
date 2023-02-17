@@ -6,7 +6,7 @@
 /*   By: mnouchet <mnouchet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 23:08:20 by mnouchet          #+#    #+#             */
-/*   Updated: 2023/02/09 15:11:49 by mnouchet         ###   ########.fr       */
+/*   Updated: 2023/02/17 18:57:09 by mnouchet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ static char	*resolve_file(char *file)
 	while (env[i])
 		free(env[i++]);
 	free(env);
+	free(file);
 	return (path);
 }
 
@@ -72,7 +73,7 @@ t_command	parse_command(char *str)
 	char		**args;
 
 	args = ft_split(str, ' ');
-	command.file = resolve_file(args[0]);
+	command.file = resolve_file(ft_strdup(args[0]));
 	command.args = args;
 	return (command);
 }
