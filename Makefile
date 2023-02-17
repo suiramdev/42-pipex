@@ -6,14 +6,12 @@
 #    By: mnouchet <mnouchet@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/06 22:19:57 by mnouchet          #+#    #+#              #
-#    Updated: 2023/02/15 18:24:05 by mnouchet         ###   ########.fr        #
+#    Updated: 2023/02/17 21:46:06 by mnouchet         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME		:= pipex
-
-## ########################################################################## ##
-#   INGREDIENTS																  ##
+## ########################################################################## ## #   INGREDIENTS																  ##
 ## ########################################################################## ##
 # LIBS			libraries to be used
 # LIBS_TARGET	libraries to be built
@@ -51,7 +49,7 @@ OBJS		:= $(SRCS:$(SRCS_DIR)/%.c=$(BUILD_DIR)/%.o)
 CC			:= cc
 CFLAGS		:= -g3 -Wall -Wextra -Werror	
 CPPFLAGS    := $(INCS:%=-I%)
-LDFLAGS     := $(addprefix -L,$(dir $(LIBS_TARGET))) -L /opt/X11/lib
+LDFLAGS     := $(addprefix -L,$(dir $(LIBS_TARGET)))
 LDLIBS      := $(addprefix -l,$(LIBS))
 
 ## ########################################################################## ##
@@ -84,10 +82,10 @@ $(LIBS_TARGET):
 $(BUILD_DIR)/%.o: $(SRCS_DIR)/%.c
 	echo "→ Compiling $<"
 	$(DIR_DUP)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@ 
+	$(CC) $(CFLAGS) -c $< -o $@ $(CPPFLAGS)
 
 $(NAME): $(LIBS_TARGET) $(OBJS)
-	$(CC) $(LDFLAGS) $(OBJS) $(LDLIBS) -o $(NAME)
+	$(CC) $(OBJS) -o $(NAME) $(LDLIBS) $(LDFLAGS)
 	echo "\033[0;32m✓ $@ READY"
 
 bonus: all
