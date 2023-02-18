@@ -6,7 +6,7 @@
 /*   By: mnouchet <mnouchet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 19:25:06 by mnouchet          #+#    #+#             */
-/*   Updated: 2023/02/18 05:16:46 by mnouchet         ###   ########.fr       */
+/*   Updated: 2023/02/18 05:21:52 by mnouchet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,6 @@ static int	process(int argc, char **argv, char **envp, int **fd, int use_here_do
 	{
 		if (here_doc(argv) == EXIT_FAILURE)
 			return (EXIT_FAILURE);
-		i = 0;
 	}
 	else
 	{
@@ -68,8 +67,8 @@ static int	process(int argc, char **argv, char **envp, int **fd, int use_here_do
 			if (dup2(open(argv[1], O_RDONLY), STDIN_FILENO))
 				return (EXIT_FAILURE);
 		}
-		i = entry < 0;
 	}
+	i = 0;
 	while (i < argc - 3 - use_here_doc)
 	{
 		if (argv[i + 2 + use_here_doc][0] == '\0')
