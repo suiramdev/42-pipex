@@ -1,25 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   commands.h                                         :+:      :+:    :+:   */
+/*   entry.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mnouchet <mnouchet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/30 23:08:37 by mnouchet          #+#    #+#             */
-/*   Updated: 2023/01/31 18:05:14 by mnouchet         ###   ########.fr       */
+/*   Created: 2023/02/20 17:24:07 by mnouchet          #+#    #+#             */
+/*   Updated: 2023/02/20 17:25:30 by mnouchet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef COMMANDS_H
-# define COMMANDS_H
+#ifndef ENTRY_H
+# define ENTRY_H
 
-typedef struct s_command
-{
-	char	*file;
-	char	**args;
-}	t_command;
-
-t_command	parse_command(char *str);
-void		free_command(t_command command);
+int	entry_here(char *delim);
+int	entry_file(char *file);
 
 #endif

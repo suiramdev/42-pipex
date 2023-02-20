@@ -6,13 +6,15 @@
 /*   By: mnouchet <mnouchet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/05 20:07:40 by mnouchet          #+#    #+#             */
-/*   Updated: 2023/02/09 15:03:50 by mnouchet         ###   ########.fr       */
+/*   Updated: 2023/02/20 17:21:05 by mnouchet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 #include <unistd.h>
 
+/// @brief Close all pipes
+/// @param fd Array of pipes
 void	close_pipes(int **fd)
 {
 	int	i;
@@ -28,6 +30,9 @@ void	close_pipes(int **fd)
 	free(fd);
 }
 
+/// @brief Setup pipes for a given amount
+/// @param count Number of pipes to create
+/// @return Array of pipes
 int	**setup_pipes(int count)
 {
 	int	**fd;

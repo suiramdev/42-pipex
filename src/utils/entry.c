@@ -1,20 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   here_doc.c                                         :+:      :+:    :+:   */
+/*   entry.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mnouchet <mnouchet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/02/15 18:17:36 by mnouchet          #+#    #+#             */
-/*   Updated: 2023/02/16 15:49:01 by mnouchet         ###   ########.fr       */
+/*   Created: 2023/02/20 16:46:24 by mnouchet          #+#    #+#             */
+/*   Updated: 2023/02/20 18:13:54 by mnouchet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <libft.h>
-#include <stdlib.h>
-#include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <stdlib.h>
 
 static void	here_doc_loop(char *delim, int fd[2])
 {
@@ -34,20 +35,37 @@ static void	here_doc_loop(char *delim, int fd[2])
 	exit(1);
 }
 
-int	here_doc(char **argv)
+/// @brief reproduce the behavior of the here_doc operator
+/// @param delim the delimiter
+/// @return the file descriptor read or -1 if an error occured
+int	entry_here(char *delim)
 {
 	int		fd[2];
 	pid_t	pid;
 
 	if (pipe(fd) < 0)
-		return (EXIT_FAILURE);
+		return (-1);
 	pid = fork();
 	if (pid < 0)
-		return (EXIT_FAILURE);
+		return (-1);
 	if (pid == 0)
-		here_doc_loop(argv[2], fd);
+		here_doc_loop(delim, fd);
 	wait(&pid);
 	close(fd[1]);
 	dup2(fd[0], STDIN_FILENO);
+	return (STDIN_FILENO);
+}
+
+/// @brief Set the STDIN_FILENO to the file descriptor,
+/// or to /dev/null if the file doesn't exist
+/// @param file the file to open
+/// @return EXIT_SUCCESS or EXIT_FAILURE
+int	entry_file(char *file)
+{
+	if (dup2(open(file, O_RDONLY), STDIN_FILENO) < 0)
+	{
+		if (dup2(open("/dev/null", O_RDONLY), STDIN_FILENO) < 0)
+			return (EXIT_FAILURE);
+	}
 	return (EXIT_SUCCESS);
 }

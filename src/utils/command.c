@@ -1,26 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   commands.c                                         :+:      :+:    :+:   */
+/*   command.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mnouchet <mnouchet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 23:08:20 by mnouchet          #+#    #+#             */
-/*   Updated: 2023/02/17 18:57:09 by mnouchet         ###   ########.fr       */
+/*   Updated: 2023/02/20 18:49:51 by mnouchet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "types/commands.h"
+#include "utils/command.h"
 #include <libft.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #include <unistd.h>
+#include <stdlib.h>
 
-/**
- * This function concatenate the given path with the given file name.
- * Simple as that.
- *
- * @param path
- * @param file
- */
+/// @brief Contatenate the given path with the given file name.
+/// @param path The path.
+/// @param file The file name.
+/// @return The concatenation of the path and the file name.
 static char	*join_path(char *path, char *file)
 {
 	char	*slashed;
@@ -32,12 +32,10 @@ static char	*join_path(char *path, char *file)
 	return (concat);
 }
 
-/**
- * This function retrieve the given file's path,
-	by looking to the current directory and the PATH env.
- *
- * @param file
- */
+/// @brief This function retrieve the given file's path,
+/// by looking to the current directory and the PATH env.
+/// @param file The file name.
+/// @return The file's path, or NULL if the file is not found.
 static char	*resolve_file(char *file)
 {
 	char	*path;
@@ -67,6 +65,9 @@ static char	*resolve_file(char *file)
 	return (path);
 }
 
+/// @brief Parse the given string into a command.
+/// @param str The string to parse.
+/// @return The parsed command.
 t_command	parse_command(char *str)
 {
 	t_command	command;
@@ -78,6 +79,8 @@ t_command	parse_command(char *str)
 	return (command);
 }
 
+/// @brief Free the given command.
+/// @param command The command to free.
 void	free_command(t_command command)
 {
 	int	i;
@@ -90,4 +93,34 @@ void	free_command(t_command command)
 		i++;
 	}
 	free(command.args);
+}
+
+/// @brief Execute the given command.
+/// @param command The command to execute.
+/// @param pipe The pipe to use, to store the command's output. 
+/// @param envp The environment variables, used to execute the command.
+/// @return EXIT_SUCCESS if the command was executed successfully,
+/// EXIT_FAILURE otherwise.
+int	execute_command(t_command command, int *pipe, char **envp)
+{
+	int	pid;
+
+	pid = fork();
+	if (pid < 0)
+		return (EXIT_FAILURE);
+	if (pid == 0)
+	{
+		close(pipe[0]);
+		if (dup2(pipe[1], STDOUT_FILENO))
+			return (EXIT_FAILURE);
+		execve(command.file, command.args, envp);
+		free_command(command);
+		return (EXIT_FAILURE);
+	}
+	wait(&pid);
+	close(pipe[1]);
+	if (dup2(pipe[0], STDIN_FILENO))
+		return (EXIT_FAILURE);
+	free_command(command);
+	return (EXIT_SUCCESS);
 }
