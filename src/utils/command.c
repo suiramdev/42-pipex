@@ -6,7 +6,7 @@
 /*   By: mnouchet <mnouchet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 23:08:20 by mnouchet          #+#    #+#             */
-/*   Updated: 2023/02/20 18:49:51 by mnouchet         ###   ########.fr       */
+/*   Updated: 2023/02/20 21:35:50 by mnouchet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ int	execute_command(t_command command, int *pipe, char **envp)
 	if (pid == 0)
 	{
 		close(pipe[0]);
-		if (dup2(pipe[1], STDOUT_FILENO))
+		if (dup2(pipe[1], STDOUT_FILENO) < 0)
 			return (EXIT_FAILURE);
 		execve(command.file, command.args, envp);
 		free_command(command);
@@ -119,7 +119,7 @@ int	execute_command(t_command command, int *pipe, char **envp)
 	}
 	wait(&pid);
 	close(pipe[1]);
-	if (dup2(pipe[0], STDIN_FILENO))
+	if (dup2(pipe[0], STDIN_FILENO) < 0)
 		return (EXIT_FAILURE);
 	free_command(command);
 	return (EXIT_SUCCESS);

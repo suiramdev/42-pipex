@@ -6,7 +6,7 @@
 /*   By: mnouchet <mnouchet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/20 16:46:24 by mnouchet          #+#    #+#             */
-/*   Updated: 2023/02/20 18:13:54 by mnouchet         ###   ########.fr       */
+/*   Updated: 2023/02/20 21:35:16 by mnouchet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,8 @@ int	entry_here(char *delim)
 		here_doc_loop(delim, fd);
 	wait(&pid);
 	close(fd[1]);
-	dup2(fd[0], STDIN_FILENO);
+	if (dup2(fd[0], STDIN_FILENO) < 0)
+		return (-1);
 	return (STDIN_FILENO);
 }
 
