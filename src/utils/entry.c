@@ -60,13 +60,13 @@ int	entry_here(char *delim)
 /// @brief Set the STDIN_FILENO to the file descriptor,
 /// or to /dev/null if the file doesn't exist
 /// @param file the file to open
-/// @return EXIT_SUCCESS or EXIT_FAILURE
+/// @return boolean
 int	entry_file(char *file)
 {
 	if (dup2(open(file, O_RDONLY), STDIN_FILENO) < 0)
 	{
 		if (dup2(open("/dev/null", O_RDONLY), STDIN_FILENO) < 0)
-			return (EXIT_FAILURE);
+			return (0);
 	}
-	return (EXIT_SUCCESS);
+	return (1);
 }

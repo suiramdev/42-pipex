@@ -16,6 +16,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <fcntl.h>
 
 /// @brief Contatenate the given path with the given file name.
 /// @param path The path.
@@ -99,12 +100,16 @@ void	free_command(t_command command)
 /// @param command The command to execute.
 /// @param pipe The pipe to use, to store the command's output. 
 /// @param envp The environment variables, used to execute the command.
-/// @return EXIT_SUCCESS if the command was executed successfully,
-/// EXIT_FAILURE otherwise.
+/// @return boolean
 int	execute_command(t_command command, int *pipe, char **envp)
 {
 	int	pid;
 
+	if (!command.file)
+	{
+		free_command(command);
+		return (dup2(open("/dev/null", O_RDONLY), STDIN_FILENO) < 0);
+	}
 	pid = fork();
 	if (pid < 0)
 		return (EXIT_FAILURE);
@@ -112,15 +117,13 @@ int	execute_command(t_command command, int *pipe, char **envp)
 	{
 		close(pipe[0]);
 		if (dup2(pipe[1], STDOUT_FILENO) < 0)
-			return (EXIT_FAILURE);
+			return (0);
 		execve(command.file, command.args, envp);
 		free_command(command);
-		return (EXIT_FAILURE);
+		return (1);
 	}
 	wait(&pid);
 	close(pipe[1]);
-	if (dup2(pipe[0], STDIN_FILENO) < 0)
-		return (EXIT_FAILURE);
 	free_command(command);
-	return (EXIT_SUCCESS);
+	return (dup2(pipe[0], STDIN_FILENO) < 0);
 }

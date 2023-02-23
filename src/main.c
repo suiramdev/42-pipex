@@ -23,14 +23,14 @@ static	int	process_entry(int use_here_doc, char **argv)
 	if (use_here_doc)
 	{
 		if (entry_here(argv[2]) < 0)
-			return (EXIT_FAILURE);
+			return (0);
 	}
 	else
 	{
-		if (entry_file(argv[1]) < 0)
-			return (EXIT_FAILURE);
+		if (!entry_file(argv[1]))
+			return (0);
 	}
-	return (EXIT_SUCCESS);
+	return (1);
 }
 
 static int	process_commands(int count, char **args, char **envp, int **pipes)
@@ -44,11 +44,11 @@ static int	process_commands(int count, char **args, char **envp, int **pipes)
 		if (args[i][0] == '\0')
 			continue ;
 		command = parse_command(args[i]);
-		if (execute_command(command, pipes[i], envp) == EXIT_FAILURE)
-			return (EXIT_FAILURE);
+		if (!execute_command(command, pipes[i], envp))
+			return (0);
 		i++;
 	}
-	return (EXIT_SUCCESS);
+	return (1);
 }
 
 static void	copy_to(int from, int to)
