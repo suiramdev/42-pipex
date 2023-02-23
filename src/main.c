@@ -6,7 +6,7 @@
 /*   By: mnouchet <mnouchet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 19:25:06 by mnouchet          #+#    #+#             */
-/*   Updated: 2023/02/20 21:46:44 by mnouchet         ###   ########.fr       */
+/*   Updated: 2023/02/21 16:02:08 by mnouchet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,40 +64,45 @@ static void	copy_to(int from, int to)
 	}
 }
 
+static int	process(int argc, char **argv, char **envp, int **pipes)
+{
+	int	use_here_doc;
+	int	output;
+
+	use_here_doc = ft_strncmp(argv[1], "here_doc", 8) == 0;
+	if (!process_entry(use_here_doc, argv))
+		return (EXIT_FAILURE);
+	if (!process_commands(argc - 3 - use_here_doc,
+			argv + 2 + use_here_doc, envp, pipes))
+		return (EXIT_FAILURE);
+	output = open(argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (output < 0)
+		return (EXIT_FAILURE);
+	copy_to(pipes[argc - 4 - use_here_doc][0], output);
+	close(output);
+	return (EXIT_SUCCESS);
+}
+
 int	main(int argc, char **argv, char **envp)
 {
-	int			use_here_doc;
-	int			backup[2];
-	int			**pipes;
-	int			process_output;
-	int			output;
+	int	use_here_doc;
+	int	backup[2];
+	int	**pipes;
+	int	output;
 
+	use_here_doc = ft_strncmp(argv[1], "here_doc", 8) == 0;
+	if (argc - 3 - use_here_doc < 1)
+		return (EXIT_FAILURE);
 	backup[0] = dup(STDIN_FILENO);
 	backup[1] = dup(STDOUT_FILENO);
 	if (backup[0] < 0 || backup[1] < 0)
 		return (EXIT_FAILURE);
-	use_here_doc = ft_strncmp(argv[1], "here_doc", 8) == 0;
-	if (argc - 3 - use_here_doc < 1)
-		return (EXIT_FAILURE);
-	if (process_entry(use_here_doc, argv) == EXIT_FAILURE)
-		return (EXIT_FAILURE);
 	pipes = setup_pipes(argc - 3 - use_here_doc);
 	if (!pipes)
 		return (EXIT_FAILURE);
-	process_output = process_commands(argc - 3 - use_here_doc,
-			argv + 2 + use_here_doc, envp, pipes);
-	if (process_output == EXIT_SUCCESS)
-	{
-		output = open(argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if (output >= 0)
-		{
-			copy_to(pipes[argc - 4 - use_here_doc][0], output);
-			close(output);
-			process_output = EXIT_FAILURE;
-		}
-	}
+	output = process(argc, argv, envp, pipes);
 	close_pipes(pipes);
 	if (dup2(backup[0], STDIN_FILENO) < 0 || dup2(backup[1], STDOUT_FILENO) < 0)
 		return (EXIT_FAILURE);
-	return (process_output);
+	return (output);
 }
