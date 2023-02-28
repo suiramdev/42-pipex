@@ -125,5 +125,5 @@ int	execute_command(t_command command, int *pipe, char **envp)
 	wait(&pid);
 	close(pipe[1]);
 	free_command(command);
-	return (dup2(pipe[0], STDIN_FILENO) < 0);
+	return (dup2(pipe[0], STDIN_FILENO) >= 0);
 }
