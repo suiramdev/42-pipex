@@ -37,16 +37,17 @@ static void	here_doc_loop(char *delim, int fd[2])
 	char	*line;
 
 	close(fd[0]);
+	delim = ft_strjoin(delim, "\n");
 	line = ft_gnl(STDIN_FILENO);
 	while (line)
 	{
-		line[ft_strlen(line) - 1] = '\0';
 		if (ft_strcmp(line, delim) == 0)
 			break ;
 		write(fd[1], line, ft_strlen(line));
 		free(line);
 		line = ft_gnl(STDIN_FILENO);
 	}
+	free(delim);
 	free(line);
 	exit(0);
 }
