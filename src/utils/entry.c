@@ -49,7 +49,6 @@ static void	here_doc_loop(char *delim, int fd[2])
 	}
 	free(delim);
 	free(line);
-	exit(0);
 }
 
 /// @brief reproduce the behavior of the here_doc operator
@@ -66,7 +65,10 @@ int	entry_here(char *delim)
 	if (pid < 0)
 		return (-1);
 	if (pid == 0)
+	{
 		here_doc_loop(delim, fd);
+		return (-1);
+	}
 	wait(&pid);
 	close(fd[1]);
 	if (dup2(fd[0], STDIN_FILENO) < 0)
