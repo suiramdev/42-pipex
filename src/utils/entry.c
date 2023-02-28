@@ -6,7 +6,7 @@
 /*   By: mnouchet <mnouchet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/20 16:46:24 by mnouchet          #+#    #+#             */
-/*   Updated: 2023/02/20 21:35:16 by mnouchet         ###   ########.fr       */
+/*   Updated: 2023/02/28 16:30:14 by suiramdev        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,21 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <stdlib.h>
+#include <stdio.h>
+
+static int	ft_strcmp(const char *s1, const char *s2)
+{
+	int	i;
+
+	i = 0;
+	while (s1[i] == s2[i])
+	{
+		if (!s1[i])
+			return (0);
+		i++;
+	}
+	return (s1[i] - s2[i]);
+}
 
 static void	here_doc_loop(char *delim, int fd[2])
 {
@@ -25,14 +40,15 @@ static void	here_doc_loop(char *delim, int fd[2])
 	line = ft_gnl(STDIN_FILENO);
 	while (line)
 	{
-		if (ft_strncmp(line, delim, ft_strlen(delim)) == 0)
+		line[ft_strlen(line) - 1] = '\0';
+		if (ft_strcmp(line, delim) == 0)
 			break ;
 		write(fd[1], line, ft_strlen(line));
 		free(line);
 		line = ft_gnl(STDIN_FILENO);
 	}
 	free(line);
-	exit(1);
+	exit(0);
 }
 
 /// @brief reproduce the behavior of the here_doc operator
