@@ -108,7 +108,7 @@ int	execute_command(t_command command, int *pipe, char **envp)
 	if (!command.file)
 	{
 		free_command(command);
-		return (dup2(open("/dev/null", O_RDONLY), STDIN_FILENO) < 0);
+		return (1);
 	}
 	pid = fork();
 	if (pid < 0)
