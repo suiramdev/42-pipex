@@ -86,7 +86,7 @@ $(BUILD_DIR)/%.o: $(SRCS_DIR)/%.c
 
 $(NAME): $(LIBS_TARGET) $(OBJS)
 	$(CC) $(OBJS) -o $(NAME) $(LDLIBS) $(LDFLAGS)
-	echo "\033[0;32m✓ $@ READY"
+	echo "\033[0;32m✓ $@ READY\033[0m"
 
 bonus: all
 
