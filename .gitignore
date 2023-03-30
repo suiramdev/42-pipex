@@ -1,0 +1,6 @@
+# Build
+.build
+pipex
+
+# IDEs
+.vscode
