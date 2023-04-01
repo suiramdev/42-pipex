@@ -6,7 +6,7 @@
 #    By: mnouchet <mnouchet@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/06 22:19:57 by mnouchet          #+#    #+#              #
-#    Updated: 2023/03/28 20:25:30 by mnouchet         ###   ########.fr        #
+#    Updated: 2023/04/01 13:14:43 by mnouchet         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,6 +37,8 @@ INCS		:= includes				\
 
 SRCS_DIR	:= src
 SRCS		:= main.c				\
+			   entry.c				\
+			   process.c			\
 			   types/command.c		\
 			   types/pipes.c		\
 			   utils/path.c
