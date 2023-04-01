@@ -22,6 +22,7 @@
 static int	here_doc(char *delimiter)
 {
 	char	*line;
+	char	*trimmed;
 	int		fd;
 
 	fd = open(".here_doc", O_WRONLY | O_CREAT | O_TRUNC, 0644);
@@ -31,13 +32,17 @@ static int	here_doc(char *delimiter)
 	{
 		write(STDOUT_FILENO, "heredoc> ", 9);
 		line = ft_gnl(STDIN_FILENO);
-		if (ft_strncmp(ft_strtrim(line, "\n"), delimiter,
+		trimmed = ft_strtrim(line, "\n");
+		if (ft_strncmp(trimmed, delimiter,
 				ft_strlen(line) + 1) == 0)
 		{
 			free(line);
+			free(trimmed);
 			break ;
 		}
 		write(fd, line, ft_strlen(line));
+		free(line);
+		free(trimmed);
 	}
 	close(fd);
 	fd = open(".here_doc", O_RDONLY);
