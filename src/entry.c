@@ -33,8 +33,7 @@ static int	here_doc(char *delimiter)
 		write(STDOUT_FILENO, "heredoc> ", 9);
 		line = ft_gnl(STDIN_FILENO);
 		trimmed = ft_strtrim(line, "\n");
-		if (ft_strncmp(trimmed, delimiter,
-				ft_strlen(line) + 1) == 0)
+		if (ft_strncmp(trimmed, delimiter, ft_strlen(line) + 1) == 0)
 		{
 			free(line);
 			free(trimmed);
