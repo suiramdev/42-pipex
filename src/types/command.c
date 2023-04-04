@@ -25,6 +25,8 @@ t_command	*command_new(char *line, char **env)
 	command = malloc(sizeof(t_command));
 	if (!command)
 		return (NULL);
+	command->next = NULL;
+	command->prev = NULL;
 	command->env = env;
 	command->args = ft_split(line, ' ');
 	command->path = resolve_path(command->args[0], env);
@@ -33,8 +35,6 @@ t_command	*command_new(char *line, char **env)
 		command_del(command);
 		return (NULL);
 	}
-	command->next = NULL;
-	command->prev = NULL;
 	return (command);
 }
 
