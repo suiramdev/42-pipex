@@ -29,10 +29,10 @@ static void	child_process(size_t i, t_command *command,
 	else
 		dup2(entries[1], STDOUT_FILENO);
 	pipes_del(pipes);
-	execve(command->path, command->args, command->env);
 	close(entries[0]);
 	if (entries[1] != -1)
 		close(entries[1]);
+	execve(command->path, command->args, command->env);
 	command_del(command);
 	exit(EXIT_FAILURE);
 }
